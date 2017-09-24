@@ -188,7 +188,7 @@ class Main extends Phaser.State {
 		this.punter.anchor.setTo(0.5, 0.5)
 
 		this.gameoverLabel = this.add.text(this.game.world.width/2, this.game.world.height/2, 
-			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n                                          GAME OVER', { fontSize: '20px', fill: '#aaa'}})
+			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n                                          GAME OVER', { fontSize: '20px', fill: '#aaa'})
 		this.gameoverLabel.anchor.setTo(0.5, 0.5)
 		this.gameoverLabel.visible = false
 
