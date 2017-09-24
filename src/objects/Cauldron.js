@@ -7,11 +7,11 @@ class Cauldron {
         this.sprite.animations.add('bubble', [0,1,2,3,4], 10, true)
         this.sprite.animations.play('bubble')
 
-		this.item1 = this.game.add.sprite(x-23, y, 'items')
+		this.item1 = this.game.add.sprite(x-23, y-12, 'items')
 		this.item1.anchor.setTo(0.5, 0.5)
-		this.item2 = this.game.add.sprite(x, y-26, 'items')
+		this.item2 = this.game.add.sprite(x, y-38, 'items')
 		this.item2.anchor.setTo(0.5, 0.5)
-		this.item3 = this.game.add.sprite(x+29, y, 'items')
+		this.item3 = this.game.add.sprite(x+29, y-12, 'items')
 		this.item3.anchor.setTo(0.5, 0.5)
 		this.itemCount = 0
 		this.item1.visible = false
@@ -48,6 +48,7 @@ class Cauldron {
 			this.game.cooking = true
 			this.game.cookingLabel.visible = true
 			this.game.gamestate = 30
+			this.game.sfx_cooking.play()
 
 		}
 		this.itemCount += 1

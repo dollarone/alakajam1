@@ -2,9 +2,9 @@ class Item {
 
 	constructor(game, id, x, y){
 		this.game = game
-		this.sprite = this.game.add.sprite(x, y, 'items')
-        this.sprite.anchor.setTo(0.5, 0.5)
+	    this.sprite = this.game.add.sprite(x, y, 'items')
         this.sprite.frame = id
+        this.sprite.anchor.setTo(0.5, 0.5)
         //this.sprite.sendToBack()
         this.orgX = x
         this.orgY = y
@@ -29,6 +29,44 @@ class Item {
                     break
             case 8: this.name = "rose"
                     break
+            case 9: this.name = "double espresso"
+                    break
+            case 10: this.name = "mouse trap"
+                    break
+            case 11: this.name = "battery"
+                    break
+            case 12: this.name = "energy drink"
+                    break
+            case 13: this.name = "balloon"
+                    break
+            case 14: this.name = "chocolate"
+                    break
+            case 15: this.name = "silver spoon"
+                    break
+            case 16: this.name = "candle"
+                    break
+            case 17: this.name = "perfume"
+                    break
+            case 18: this.name = ""
+                    break
+            case 19: this.name = ""
+                    break
+            case 20: this.name = "scrabble letter"
+                    break
+            case 21: this.name = "skull"
+                    break
+            case 22: this.name = "broken mirror"
+                    break
+            case 23: this.name = "warm gun"
+                    break
+            case 24: this.name = "apple"
+                    break
+            case 25: this.name = "cognac"
+                    break
+            case 26: this.name = "red wine"
+                    break
+            case 27: this.name = "water"
+                    break
         
         }
 
@@ -43,6 +81,7 @@ class Item {
             this.game.canPickCountdown = this.game.canPickCountdownMax
             this.game.canPick = false
             this.game.hasSelectedSprite = true
+
         }
     }
 
@@ -65,7 +104,18 @@ class Item {
                     this.game.cauldron.add(this.game.selectedSprite)
                     this.game.selectedSprite = null
                     this.game.hasSelectedSprite = false
+                    this.game.nameLabel.visible = false
                     this.game.canPick = true
+                    switch (this.game.rnd.integerInRange(1,4)) {
+                        case 1: this.game.sfx_drop1.play()
+                        break
+                        case 2: this.game.sfx_drop2.play()
+                        break
+                        case 3: this.game.sfx_drop3.play()
+                        break
+                        case 4: this.game.sfx_drop4.play()
+                        break
+                    }
                     if (this.game.selectedSprite == this) {
 
                     }
@@ -75,6 +125,7 @@ class Item {
                     this.game.selectedSprite.sprite.y = this.game.selectedSprite.orgY
                     this.game.selectedSprite.sprite.angle = 0
                     this.game.selectedSprite = null
+                    this.game.nameLabel.visible = false
                     this.game.hasSelectedSprite = false
                     this.game.canPick = true
 
@@ -82,9 +133,12 @@ class Item {
                 
             }
             else if (this.pickable == true) {
-
+                this.game.sfx_select.play()
                 //console.log("picking " + this.name + " canPick:" + this.game.canPick)
                 this.setSelectedSprite(this)
+                this.game.nameLabel.text = this.name
+                this.game.nameLabel.visible = true
+                
             }
             return true
         }
