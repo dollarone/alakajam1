@@ -24,7 +24,13 @@ class Order {
         if (ingredient3 in this.ingredients) {
             sum += this.ingredients[ingredient3]
         }
-        this.gold = sum
+        this.gold = sum*10
+        if (this.gold < 0) { 
+            this.gold = 0
+        }
+        if (sum>14) { 
+            this.gold = sum*30+50
+        }
         return sum
     }
 

@@ -20,6 +20,9 @@ class Cauldron {
 		this.item1.alpha = 0.4
 		this.item2.alpha = 0.4
 		this.item3.alpha = 0.4
+		this.item1name = ""
+		this.item2name = ""
+		this.item3name = ""
 
 		
 	}
@@ -29,14 +32,17 @@ class Cauldron {
 	add(item) {
 		if (this.itemCount == 0) {
 			this.item1.frame = item.sprite.frame
+			this.item1name = item.name
 			this.item1.visible = true
 		}
 		else if (this.itemCount == 1) {
 			this.item2.frame = item.sprite.frame
+			this.item2name = item.name
 			this.item2.visible = true
 		}
 		else if (this.itemCount == 2) {
 			this.item3.frame = item.sprite.frame
+			this.item3name = item.name
 			this.item3.visible = true
 			this.game.cookingCountdown = this.game.cookingCountdownMax
 			this.game.cooking = true

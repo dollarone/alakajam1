@@ -12,15 +12,24 @@ class Item {
         this.pickable = true
         this.name = "sock"
         this.id = id
-        if (this.id == 1) {
-            this.name = "banana"
-        }
-        if (this.id == 2) {
-            this.name = "duck"
-        }
-
-        if (this.id == 3) {
-            this.name = "handcuffs"
+        switch (this.id) {
+            case 1: this.name = "banana"
+                    break
+            case 2: this.name = "rubber duck"
+                    break
+            case 3: this.name = "handcuffs"
+                    break
+            case 4: this.name = "four-leaf clover"
+                    break
+            case 5: this.name = "condom"
+                    break
+            case 6: this.name = "soda can"
+                    break
+            case 7: this.name = "pizza slice"
+                    break
+            case 8: this.name = "rose"
+                    break
+        
         }
 
     	this.sprite.angle = 0
@@ -38,7 +47,7 @@ class Item {
     }
 
     click() {
-        console.log("name:" + this.name + " pickable:" + this.pickable)
+//        console.log("name:" + this.name + " pickable:" + this.pickable)
         if (this.pickable && (this.game.input.x > (this.sprite.x - this.sprite.width/2)) &&
             (this.game.input.x < (this.sprite.x + this.sprite.width/2)) &&
             (this.game.input.y > (this.sprite.y - this.sprite.height/2)) &&
@@ -74,7 +83,7 @@ class Item {
             }
             else if (this.pickable == true) {
 
-                console.log("picking " + this.name + " canPick:" + this.game.canPick)
+                //console.log("picking " + this.name + " canPick:" + this.game.canPick)
                 this.setSelectedSprite(this)
             }
             return true
