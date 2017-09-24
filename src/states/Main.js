@@ -188,7 +188,7 @@ class Main extends Phaser.State {
 		this.punter.anchor.setTo(0.5, 0.5)
 
 		this.gameoverLabel = this.add.text(this.game.world.width/2, this.game.world.height/2, 
-			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n                                          GAME OVER', { fontSize: '20px'})
+			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n                                          GAME OVER', { fontSize: '20px', fill: '#aaa'}})
 		this.gameoverLabel.anchor.setTo(0.5, 0.5)
 		this.gameoverLabel.visible = false
 
@@ -368,6 +368,8 @@ class Main extends Phaser.State {
 		if (this.game.gamestate == 100 && this.step == this.waitForStep) {
 			this.gameover = true
 			this.gameoverLabel.visible = true
+			this.bubble.visible = false
+			this.bubbleLabel.visible = false
 			this.game.gamestate = 101
 
 		}
