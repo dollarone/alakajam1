@@ -41,6 +41,7 @@ class Cauldron {
 			this.game.cookingCountdown = this.game.cookingCountdownMax
 			this.game.cooking = true
 			this.game.cookingLabel.visible = true
+			this.game.gamestate = 30
 
 		}
 		this.itemCount += 1
