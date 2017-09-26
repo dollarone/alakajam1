@@ -441,7 +441,7 @@ class Main extends Phaser.State {
 				this.bubbleLabel.text = this.order.result
 				this.bubble.visible = true
 				this.bubbleLabel.visible = true
-				this.waitForStep = this.step + 60
+				this.waitForStep = this.step + this.textLength
 				this.game.gamestate = 42
 				this.game.money += this.order.gold
 				this.moneyLabel.text = this.game.money
@@ -537,6 +537,7 @@ class Main extends Phaser.State {
 		}
 
 		if (this.game.input.activePointer.leftButton.isDown && (
+			this.game.gamestate == 100 || this.game.gamestate == 110 ||
 			this.game.gamestate == 40 || this.game.gamestate == 42 || this.game.gamestate == 1 || this.game.gamestate == 20 || this.game.gamestate == 0)) {
 			this.step = this.waitForStep -2
 		}
