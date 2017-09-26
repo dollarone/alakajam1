@@ -105,7 +105,10 @@ class Item {
                     this.game.selectedSprite = null
                     this.game.hasSelectedSprite = false
                     this.game.nameLabel.visible = false
-                    this.game.canPick = true
+                    this.game.canPickCountdown = this.game.canPickCountdownMax
+                    this.game.canPick = false
+
+
                     switch (this.game.rnd.integerInRange(1,4)) {
                         case 1: this.game.sfx_drop1.play()
                         break
@@ -127,7 +130,9 @@ class Item {
                     this.game.selectedSprite = null
                     this.game.nameLabel.visible = false
                     this.game.hasSelectedSprite = false
-                    this.game.canPick = true
+                    this.game.canPickCountdown = this.game.canPickCountdownMax
+                    this.game.canPick = false
+
 
                 }
                 
