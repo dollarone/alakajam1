@@ -40,9 +40,12 @@ class Main extends Phaser.State {
     	this.topShelfY = 75
     	this.shelfStartX = 162
 
+    	this.potions = 0
+
 
     	this.inventory = []
 		this.maxItems = 5
+   		this.inventory.push(new Item(this.game, 0, this.shelfStartX+4, this.topShelfY-3))
     	for (let i=0; i<3; i++) {
     		this.inventory.push(new Item(this.game, i, this.shelfStartX + i*48, this.topShelfY))
 	   		this.inventory.push(new Item(this.game, 27, this.shelfStartX + i*20 + 200, 250))
@@ -50,6 +53,8 @@ class Main extends Phaser.State {
     	this.inventory.push(new Item(this.game, 26, this.shelfStartX + 10*32+16, 250))
     	this.inventory.push(new Item(this.game, 25, this.shelfStartX + 11*32+8, 250))
   		this.inventory.push(new Item(this.game, 5, 45, 50))
+
+		this.inventory.push(new Item(this.game, 24, this.shelfStartX + 11*32, 130))
 
 		this.inventory.push(new Item(this.game, 17, this.shelfStartX + 20, 180))
 		this.inventory.push(new Item(this.game, 11, this.shelfStartX + 120, 180))
@@ -91,9 +96,9 @@ class Main extends Phaser.State {
  	  	this.game.cauldron = new Cauldron(this.game, 218, 308)
 
 		this.order = new Order(this.game, "Love potion", "Hi, I'd like a potion\nthat would instantly get\na person in love with me.\nAsking for a friend.")
-		this.order.defineIngredient("rose", 3)
-		this.order.defineIngredient("perfume", 3)
-		this.order.defineIngredient("chocolate", 3)
+		this.order.defineIngredient("rose", 5)
+		this.order.defineIngredient("perfume", 5)
+		this.order.defineIngredient("chocolate", 5)
 		this.order.defineIngredient("banana", -1)
 		this.order.defineIngredient("condom", -3)
 		this.order.defineIngredient("broken mirror", -10)
@@ -110,9 +115,14 @@ class Main extends Phaser.State {
 		this.gold = this.game.add.sprite(554, -5, 'items')
 		this.gold.frame = 30
 		this.gold.anchor.setTo(0.5, 0.5)
-		this.game.money = 200
+		this.game.money = 0
 		this.moneyLabel = this.add.text(600, 18, this.game.money, { fontSize: '20px', fill: '#aaa'})
 		this.moneyLabel.anchor.setTo(0.5, 0.5)
+
+	    this.strikes1 = this.game.add.graphics(539, 1)
+    	this.strikes1.lineStyle(2, 0x111, 1)
+    	this.strikes1.beginFill(0x000, 0.5)
+	    this.strikes1.drawRect(0, 0, 100, 30)
 
 	    this.strikes = this.game.add.graphics(539, 31)
     	this.strikes.lineStyle(2, 0x111, 1)
@@ -150,6 +160,9 @@ class Main extends Phaser.State {
 		this.game.nameLabel.anchor.setTo(0.5, 0.5)
 		this.game.nameLabel.visible = false
 
+		this.game.potionType = this.add.text(this.game.world.width/2, 30, '', { fontSize: '20px', fill: '#aaa'})
+		this.game.potionType.anchor.setTo(0.5, 0.5)
+		this.game.potionType.visible = false
 
 		this.game.hasSelectedSprite = false
 		this.game.selectedSprite = null
@@ -162,7 +175,7 @@ class Main extends Phaser.State {
 		this.game.cookingCountdownMax = 30
 		this.game.cooking = false
 
-		this.textLength = 150
+		this.textLength = 150*5
 		this.game.gamestate = 0
 		this.waitForStep = 20
 		this.punterSpeed = 1
@@ -187,16 +200,17 @@ class Main extends Phaser.State {
 		this.punter = this.game.add.sprite(730, 270, 'punter')
 		this.punter.anchor.setTo(0.5, 0.5)
 
-		this.gameoverLabel = this.add.text(this.game.world.width/2, this.game.world.height/2, 
-			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n                                          GAME OVER', { fontSize: '20px', fill: '#aaa'})
-		this.gameoverLabel.anchor.setTo(0.5, 0.5)
-		this.gameoverLabel.visible = false
 
 	    this.introBlur = this.game.add.graphics(20, 20)
     	this.introBlur.lineStyle(2, 0x111, 1)
     	this.introBlur.beginFill(0x000, 0.8)
 	    this.introBlur.drawRect(0, 0, 600, 350)
 	    this.introBlur.visible = false
+
+		this.gameoverLabel = this.add.text(this.game.world.width/2, this.game.world.height/2, 
+			'Sadly the auhorities shut down your shop due to complaints.\n           Your days as a modern-day Alchemist are over!\n\n                                          GAME OVER\n                                          (R to restart)', { fontSize: '20px', fill: '#aaa'})
+		this.gameoverLabel.anchor.setTo(0.5, 0.5)
+		this.gameoverLabel.visible = false
 
 		this.gamestartLabel = this.add.text(this.game.world.width/2, 200, 
 			'                             You are a modern-day alchemist. \n     You conjure up potions for everyday ills and special thrills. ' +
@@ -214,6 +228,8 @@ class Main extends Phaser.State {
  	}
 
 	restart() {
+	    this.splashMusic.stop()
+		this.loopMusic.stop()
 		this.game.state.restart()
 	}
 
@@ -248,8 +264,8 @@ class Main extends Phaser.State {
 				switch (orderType) {
 					case 0:
 						this.order = new Order(this.game, "Flying potion", "I wanna fly like a bird!\nCan you make a potion?\nThat'd be awesome!")
-						this.order.defineIngredient("balloon", 5)
-						this.order.defineIngredient("energy drink", 5)
+						this.order.defineIngredient("balloon", 9)
+						this.order.defineIngredient("energy drink", 3)
 						this.order.defineIngredient("chocolate", -1)
 						this.order.defineIngredient("broken mirror", -10)
 						this.order.defineIngredient("mouse trap", -1)
@@ -263,9 +279,9 @@ class Main extends Phaser.State {
 						break
 					case 1:
 						this.order = new Order(this.game, "Love potion", "I need love in my life!\nCan you help me?\nYou're my last hope!")
-						this.order.defineIngredient("rose", 3)
-						this.order.defineIngredient("perfume", 3)
-						this.order.defineIngredient("chocolate", 3)
+						this.order.defineIngredient("rose", 5)
+						this.order.defineIngredient("perfume", 5)
+						this.order.defineIngredient("chocolate", 5)
 						this.order.defineIngredient("banana", -1)
 						this.order.defineIngredient("condom", -3)
 						this.order.defineIngredient("broken mirror", -10)
@@ -283,19 +299,24 @@ class Main extends Phaser.State {
 						this.order = new Order(this.game, "Luck potion", "I wanna win the lottery,\nbut I'm not very lucky.\nCan you make me lucky?")
 						this.order.defineIngredient("four-leaf clover", 10)
 						this.order.defineIngredient("skull", -10)
+						this.order.defineIngredient("silver spoon", 5)
 						this.order.defineIngredient("broken mirror", -10)
 						this.order.defineIngredient("warm gun", -10)
 						this.order.defineIngredient("handcuffs", -5)
 					break
 					case 3:
 						this.order = new Order(this.game, "Potion of youth", "I'm getting old.\nI wanna be young again!\nDo you have a\npotion of youth?")
-						this.order.defineIngredient("rubber duck", 3)
+						this.order.defineIngredient("rubber duck", 5)
 						this.order.defineIngredient("skull", -10)
-						this.order.defineIngredient("broken mirror", -10)
+						this.order.defineIngredient("broken mirror", 3)
 						this.order.defineIngredient("warm gun", -10)
 						this.order.defineIngredient("handcuffs", -5)
 						this.order.defineIngredient("chocolate", 1)
-						this.order.defineIngredient("balloon", 1)
+						this.order.defineIngredient("balloon", 5)
+						this.order.defineIngredient("apple", 5)
+						this.order.defineIngredient("water", 1)
+						this.order.defineIngredient("banana", 1)
+						this.order.defineIngredient("scrabble letter", 3)
 						break
 					case 4:
 						this.order = new Order(this.game, "Lust potion", "I need help...\nEven viagra doesn't!\nseem to affect me.\nGot anything?")
@@ -303,12 +324,12 @@ class Main extends Phaser.State {
 						this.order.defineIngredient("skull", -10)
 						this.order.defineIngredient("broken mirror", -10)
 						this.order.defineIngredient("warm gun", -10)
-						this.order.defineIngredient("handcuffs", 3)
+						this.order.defineIngredient("handcuffs", 5)
 						this.order.defineIngredient("red wine", 1)
 						this.order.defineIngredient("candle", 1)
-						this.order.defineIngredient("banana", 1)
+						this.order.defineIngredient("banana", 5)
 						this.order.defineIngredient("energy drink", 1)
-						this.order.defineIngredient("condom", 1)
+						this.order.defineIngredient("condom", 5)
 						this.order.defineIngredient("battery", 1)
 						this.order.defineIngredient("perfume", 1)
 						break
@@ -323,18 +344,24 @@ class Main extends Phaser.State {
 						this.order.defineIngredient("water", 1)
 						this.order.defineIngredient("apple", 1)
 						this.order.defineIngredient("banana", 1)
-						this.order.defineIngredient("double espresso", 5)
+						this.order.defineIngredient("double espresso", 9)
 						break
 					case 6:
 						this.order = new Order(this.game, "Sleeping potion", "Help! I can't sleep!\nNothing helps!\nI am desperate, you hear?\nDESPERATE!")
-						this.order.defineIngredient("cognac", 1)
+						this.order.defineIngredient("cognac", 4)
 						this.order.defineIngredient("skull", -10)
 						this.order.defineIngredient("broken mirror", -10)
 						this.order.defineIngredient("warm gun", -10)
 						this.order.defineIngredient("handcuffs", -5)
 						this.order.defineIngredient("double espresso", -5)
 						this.order.defineIngredient("energy drink", -5)
-						this.order.defineIngredient("chocolate", 1)
+						this.order.defineIngredient("chocolate", 4)
+						this.order.defineIngredient("sock", 7)
+						this.order.defineIngredient("apple", 1)
+						this.order.defineIngredient("banana", 1)
+						this.order.defineIngredient("pizza slice", 1)
+						this.order.defineIngredient("red wine", 1)
+						this.order.defineIngredient("water", 1)
 						break
 					case 7:
 						this.order = new Order(this.game, "Happiness potion", "I'm so unhappy.\nNothing makes me laugh.\nCan you sort it out?")
@@ -343,10 +370,10 @@ class Main extends Phaser.State {
 						this.order.defineIngredient("broken mirror", -10)
 						this.order.defineIngredient("handcuffs", -1)
 						this.order.defineIngredient("rubber duck", 3)
-						this.order.defineIngredient("double espresso", 1)
+						this.order.defineIngredient("double espresso", 2)
 						this.order.defineIngredient("red wine", -1)
 						this.order.defineIngredient("cognac", -1)
-						this.order.defineIngredient("chocolate", 1)
+						this.order.defineIngredient("chocolate", 2)
 						break
 				}
 
@@ -362,15 +389,41 @@ class Main extends Phaser.State {
 				this.bubble.visible = false
 				this.bubbleLabel.visible = false
 				this.game.gamestate = 25
+				this.game.potionType.text = this.order.name
+				this.game.potionType.visible = true
 		}
 
 
 		if (this.game.gamestate == 100 && this.step == this.waitForStep) {
 			this.gameover = true
+			this.introBlur.visible = true
 			this.gameoverLabel.visible = true
 			this.bubble.visible = false
 			this.bubbleLabel.visible = false
 			this.game.gamestate = 101
+			this.game.potionType.visible = false
+		}
+
+
+		if (this.game.gamestate == 110 && this.step == this.waitForStep) {
+			this.gameover = true
+			let buffer = "" + this.game.money
+			this.introBlur.visible = true
+			if (this.game.money > 1000) {
+				buffer += " - impressive!"
+			}
+			else if (this.game.money > 500) {
+				buffer += " - not bad!"
+			}
+			this.gameoverLabel.text = "                You've run out of ingredients!"+
+				"\nBetter close for the day and go get some new ones!"
+				+ "\n\n                              You made $" + buffer + "\n\n                                GAME OVER\n\n                           Thanks for playing!\n                                 (R to restart)"
+			this.gameoverLabel.anchor.setTo(0.5,0.5)
+			this.gameoverLabel.visible = true
+			this.bubble.visible = false
+			this.bubbleLabel.visible = false
+			this.game.gamestate = 101
+			this.game.potionType.visible = false
 
 		}
 
@@ -378,18 +431,23 @@ class Main extends Phaser.State {
 				this.bubble.visible = false
 				this.bubbleLabel.visible = false
 				this.game.gamestate = 45
+				this.game.potionType.visible = false
 		}
 
 		if (this.game.gamestate == 40 && this.step == this.waitForStep) {
 				this.game.sfx_cooking.stop()
 				this.game.sfx_done.play()
+				this.potions+=1
 				this.bubbleLabel.text = this.order.result
 				this.bubble.visible = true
 				this.bubbleLabel.visible = true
-				this.waitForStep = this.step + this.textLength
+				this.waitForStep = this.step + 60
 				this.game.gamestate = 42
 				this.game.money += this.order.gold
 				this.moneyLabel.text = this.game.money
+				if(this.potions == 14) {
+					this.game.gamestate = 110
+				}
 				if (this.fails == 1) {
 					this.strikes.visible = true
 					this.strike1.visible = true
